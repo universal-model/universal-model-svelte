@@ -32,6 +32,7 @@
   },
   "homepage": "https://github.com/universal-model/universal-model-svelte#readme",
   "dependencies": {
+    "uuid": "^3.4.0",
     "vue": "^3.0.0-alpha.1"
   },
   "devDependencies": {
@@ -41,6 +42,7 @@
     "@babel/preset-env": "^7.8.2",
     "@babel/preset-typescript": "^7.8.0",
     "@types/estree": "0.0.42",
+    "@types/uuid": "^3.4.6",
     "@typescript-eslint/eslint-plugin": "^2.15.0",
     "@typescript-eslint/parser": "^2.15.0",
     "eslint": "^6.8.0",

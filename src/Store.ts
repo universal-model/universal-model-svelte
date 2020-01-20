@@ -1,5 +1,7 @@
 import { Ref, UnwrapRef, reactive, watch, StopHandle, ComputedRef, computed } from 'vue';
 import { writable } from 'svelte/store';
+import { onDestroy } from 'svelte';
+import uuid from 'uuid';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export type State = { [key: string]: any };
@@ -49,13 +51,14 @@ export default class Store<T extends State, U extends SelectorsBase<T>> {
   }
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  startUsingState(id: string, subStates: any[]): any[] {
+  useState(subStates: any[]): any[] {
+    const id = uuid.v4();
     this.stateStopWatches.set(id, []);
     this.stateWritables.set(id, []);
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     subStates.forEach((subState: any, index: number) => {
-      this.stateWritables.get(id).push(writable(null));
+      this.stateWritables.get(id).push(writable(subState));
 
       this.stateStopWatches.get(id).push(
         watch(
@@ -68,10 +71,8 @@ export default class Store<T extends State, U extends SelectorsBase<T>> {
       );
     });
 
-    return this.stateWritables.get(id);
-  }
+    onDestroy(() => this.stateStopWatches.get(id).forEach((stopWatch: StopHandle) => stopWatch()));
 
-  stopUsingState(id: string): void {
-    this.stateStopWatches.get(id).forEach((stopWatch: StopHandle) => stopWatch());
+    return this.stateWritables.get(id);
   }
 }
