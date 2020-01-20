@@ -55,16 +55,12 @@ export default class Store<T extends State, U extends SelectorsBase<T>> {
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     subStates.forEach((subState: any, index: number) => {
+      this.stateWritables.get(id).push(writable(null));
+
       this.stateStopWatches.get(id).push(
         watch(
           () => subState,
-          (value) => {
-            if (this.stateWritables.get(id)) {
-              this.stateWritables.get(id)[index].set(value);
-            } else {
-              this.stateWritables.get(id).push(writable(value));
-            }
-          },
+          (value) => this.stateWritables.get(id)[index].set(value),
           {
             deep: true
           }
