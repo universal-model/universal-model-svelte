@@ -51,6 +51,10 @@ export default class Store<T extends State, U extends SelectorsBase<T>> {
     return this.reactiveSelectors;
   }
 
+  getStateAndSelectors(): [ReactiveState<T>, ComputedSelectors<T, U>] {
+    return [this.reactiveState, this.reactiveSelectors];
+  }
+
   useState(subStates: SubState[]): Writable<SubState>[] {
     const id = this.componentId++;
     this.stateStopWatches.set(id, []);
