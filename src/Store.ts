@@ -1,10 +1,10 @@
 import { Ref, UnwrapRef, reactive, watch, StopHandle, ComputedRef, computed } from 'vue';
-import { writable } from 'svelte/store';
+import { Writable, writable } from 'svelte/store';
 import { onDestroy } from 'svelte';
-import uuid from 'uuid';
+import { SubStateFlagWrapper } from './createSubState';
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export type State = { [key: string]: any };
+export type SubState = Omit<object, '__isSubState__'> & SubStateFlagWrapper;
+export type State = { [key: string]: SubState };
 
 export type SelectorsBase<T extends State> = {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -26,6 +26,7 @@ export default class Store<T extends State, U extends SelectorsBase<T>> {
   private readonly reactiveSelectors: ComputedSelectors<T, U>;
   private readonly stateStopWatches = new Map();
   private readonly stateWritables = new Map();
+  private componentId = 0;
 
   constructor(initialState: T, selectors?: Selectors<T, U>) {
     this.reactiveState = reactive(initialState);
@@ -49,21 +50,45 @@ export default class Store<T extends State, U extends SelectorsBase<T>> {
   getSelectors(): ComputedSelectors<T, U> {
     return this.reactiveSelectors;
   }
-
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  useState(subStates: any[]): any[] {
-    const id = uuid.v4();
+  
+  useState(subStates: SubState[]): Writable<SubState>[] {
+    const id = this.componentId++;
     this.stateStopWatches.set(id, []);
     this.stateWritables.set(id, []);
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    subStates.forEach((subState: any, index: number) => {
+    subStates.forEach((subState: SubState, index: number) => {
       this.stateWritables.get(id).push(writable(subState));
 
       this.stateStopWatches.get(id).push(
         watch(
           () => subState,
-          (value) => this.stateWritables.get(id)[index].set(value),
+          () => this.stateWritables.get(id)[index].set(subState),
+          {
+            deep: true
+          }
+        )
+      );
+    });
+
+    onDestroy(() => this.stateStopWatches.get(id).forEach((stopWatch: StopHandle) => stopWatch()));
+
+    return this.stateWritables.get(id);
+  }
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  useSelectors(selectors: ComputedRef<any>[]): Writable<ComputedRef<any>>[] {
+    const id = this.componentId++;
+    this.stateStopWatches.set(id, []);
+    this.stateWritables.set(id, []);
+
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    selectors.forEach((selector: ComputedRef<any>, index: number) => {
+      this.stateWritables.get(id).push(writable(selector.value));
+
+      this.stateStopWatches.get(id).push(
+        watch(
+          () => selector,
+          () => this.stateWritables.get(id)[index].set(selector.value),
           {
             deep: true
           }
