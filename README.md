@@ -66,8 +66,8 @@ Universal model is a model which can be used with any of following UI frameworks
     const selectors = store.getSelectors();
     const [state, selectors] = store.getStateAndSelectors();
     
-    const [componentAState] = useState([state.componentAState]);
-    const [selector1, selector2] = useSelectors([selectors.selector1, selectors.selector2]);
+    const [componentAState] = useState(id, [state.componentAState]);
+    const [selector1, selector2] = useSelectors(id, [selectors.selector1, selectors.selector2]);
    
 ## API Examples
 **Create initial states**
@@ -212,7 +212,7 @@ Header.svelte
       import changeUserName from '@/header/model/actions/changeUserName';
       import store from '@/store/store';
     
-      const [headerText] = store.useSelectors([store.getSelectors().headerText]);
+      const [headerText] = store.useSelectors('header', [store.getSelectors().headerText]);
     </script>
     
     <div>
@@ -232,9 +232,9 @@ TodoList.svelte
       import toggleIsDoneTodo from '@/todolist/model/actions/toggleIsDoneTodo';
       import removeTodo from '@/todolist/model/actions/removeTodo';
     
-      const [todosState] = store.useState([store.getState().todosState]);
+      const [todosState] = store.useState('todos', [store.getState().todosState]);
       const selectors = store.getSelectors();
-      const [shownTodos, userName] = store.useSelectors([selectors.shownTodos, selectors.userName]);
+      const [shownTodos, userName] = store.useSelectors('todos', [selectors.shownTodos, selectors.userName]);
     
       onMount(() => {
         // noinspection JSIgnoredPromiseFromCall
