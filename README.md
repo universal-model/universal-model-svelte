@@ -181,9 +181,9 @@ Components should use only their own state and access other components' states u
 provided by those components. This will ensure encapsulation of each component's state.
     
     <script>  
-      const [componentAState] = useState([store.getState().componentAState]);
+      const [componentAState] = useState('componentA', [store.getState().componentAState]);
       const selectors = store.getSelectors();
-      const [selector1, selector2] = useSelectors([selectors.selector1, selectors.selector2]);    
+      const [selector1, selector2] = useSelectors('componentA', [selectors.selector1, selectors.selector2]);    
     </script>
     
     <div>
