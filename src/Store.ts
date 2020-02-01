@@ -25,8 +25,10 @@ export default class Store<T extends State, U extends SelectorsBase<T>> {
   private readonly reactiveState: ReactiveState<T>;
   private readonly reactiveSelectors: ComputedSelectors<T, U>;
   private readonly stateStopWatches = new Map();
+  private readonly selectorStopWatches = new Map();
   private readonly stateWritables = new Map();
-  private componentId = 0;
+  private readonly selectorWritables = new Map();
+  private readonly idToUpdatesMap = new Map();
 
   constructor(initialState: T, selectors?: Selectors<T, U>) {
     this.reactiveState = reactive(initialState);
@@ -55,8 +57,7 @@ export default class Store<T extends State, U extends SelectorsBase<T>> {
     return [this.reactiveState, this.reactiveSelectors];
   }
 
-  useState(subStates: SubState[]): Writable<SubState>[] {
-    const id = this.componentId++;
+  useState(id: string, subStates: SubState[]): Writable<SubState>[] {
     this.stateStopWatches.set(id, []);
     this.stateWritables.set(id, []);
 
@@ -66,9 +67,32 @@ export default class Store<T extends State, U extends SelectorsBase<T>> {
       this.stateStopWatches.get(id).push(
         watch(
           () => subState,
-          () => this.stateWritables.get(id)[index].set(subState),
+          () => {
+            if (!this.idToUpdatesMap.get(id)) {
+              setTimeout(() => {
+                Object.entries(this.idToUpdatesMap.get(id)).forEach(
+                  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                  ([key, value]: [string, any]) => {
+                    if (key.startsWith('state')) {
+                      this.stateWritables.get(id)[parseInt(key.slice(5))].set(value);
+                    } else {
+                      this.selectorWritables.get(id)[parseInt(key.slice(8))].set(value);
+                    }
+                  }
+                );
+
+                this.idToUpdatesMap.delete(id);
+              }, 0);
+            }
+
+            this.idToUpdatesMap.set(id, {
+              ...this.idToUpdatesMap.get(id),
+              [`state${index}`]: subState
+            });
+          },
           {
-            deep: true
+            deep: true,
+            flush: 'sync'
           }
         )
       );
@@ -80,28 +104,50 @@ export default class Store<T extends State, U extends SelectorsBase<T>> {
   }
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  useSelectors(selectors: ComputedRef<any>[]): Writable<ComputedRef<any>>[] {
-    const id = this.componentId++;
-    this.stateStopWatches.set(id, []);
-    this.stateWritables.set(id, []);
+  useSelectors(id: string, selectors: ComputedRef<any>[]): Writable<ComputedRef<any>>[] {
+    this.selectorStopWatches.set(id, []);
+    this.selectorWritables.set(id, []);
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     selectors.forEach((selector: ComputedRef<any>, index: number) => {
-      this.stateWritables.get(id).push(writable(selector.value));
+      this.selectorWritables.get(id).push(writable(selector.value));
 
-      this.stateStopWatches.get(id).push(
+      this.selectorStopWatches.get(id).push(
         watch(
           () => selector,
-          () => this.stateWritables.get(id)[index].set(selector.value),
+          () => {
+            if (!this.idToUpdatesMap.get(id)) {
+              setTimeout(() => {
+                Object.entries(this.idToUpdatesMap.get(id)).forEach(
+                  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                  ([key, value]: [string, any]) => {
+                    if (key.startsWith('state')) {
+                      this.stateWritables.get(id)[parseInt(key.slice(5))].set(value);
+                    } else {
+                      this.selectorWritables.get(id)[parseInt(key.slice(8))].set(value);
+                    }
+                  }
+                );
+
+                this.idToUpdatesMap.delete(id);
+              }, 0);
+            }
+
+            this.idToUpdatesMap.set(id, {
+              ...this.idToUpdatesMap.get(id),
+              [`selector${index}`]: selector.value
+            });
+          },
           {
-            deep: true
+            deep: true,
+            flush: 'sync'
           }
         )
       );
     });
 
-    onDestroy(() => this.stateStopWatches.get(id).forEach((stopWatch: StopHandle) => stopWatch()));
+    onDestroy(() => this.selectorStopWatches.get(id).forEach((stopWatch: StopHandle) => stopWatch()));
 
-    return this.stateWritables.get(id);
+    return this.selectorWritables.get(id);
   }
 }
