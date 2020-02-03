@@ -7,6 +7,9 @@ Universal model is a model which can be used with any of following UI frameworks
 - Svelte 3+
 - Vue.js 3+ [universal-model-vue]
 
+If you want to use multiple UI frameworks at the same time, you can use single model
+with [universal-model] library
+
 ## Install
 
     npm install --save universal-model-svelte
