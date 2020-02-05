@@ -249,11 +249,11 @@ TodoList.svelte
       onMount(() => {
         // noinspection JSIgnoredPromiseFromCall
         fetchTodos();
-        document.addEventListener('keypress', todoListController.handleKeyPress);
+        document.addEventListener('keydown', todoListController.handleKeyDown);
       });
     
       onDestroy(() => {
-        document.removeEventListener('keypress', todoListController.handleKeyPress);
+        document.removeEventListener('keydown', todoListController.handleKeyDown);
       });
     </script>
     
@@ -293,10 +293,14 @@ todoListController.ts
     import removeAllTodos from "@/todolist/model/actions/removeAllTodos";
 
     export default {
-      handleKeyPress(keyboardEvent: KeyboardEvent): void {
+      handleKeyDown(keyboardEvent: KeyboardEvent): void {
         if (keyboardEvent.code === 'KeyA' && keyboardEvent.ctrlKey) {
+          keyboardEvent.stopPropagation();
+          keyboardEvent.preventDefault();
           addTodo();
         } else if (keyboardEvent.code === 'KeyR' && keyboardEvent.ctrlKey) {
+          keyboardEvent.stopPropagation();
+          keyboardEvent.preventDefault();
           removeAllTodos();
         }
       }
