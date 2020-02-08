@@ -103,13 +103,11 @@ export default class Store<T extends State, U extends SelectorsBase<T>> {
     return this.stateWritables.get(id);
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  useSelectors(id: string, selectors: ComputedRef<any>[]): Writable<ComputedRef<any>>[] {
+  useSelectors(id: string, selectors: ComputedRef[]): Writable<ComputedRef>[] {
     this.selectorStopWatches.set(id, []);
     this.selectorWritables.set(id, []);
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    selectors.forEach((selector: ComputedRef<any>, index: number) => {
+    selectors.forEach((selector: ComputedRef, index: number) => {
       this.selectorWritables.get(id).push(writable(selector.value));
 
       this.selectorStopWatches.get(id).push(
