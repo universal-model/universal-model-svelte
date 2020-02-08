@@ -325,12 +325,15 @@ store.ts
      
      export type State = typeof initialState;
      
-     const selectors = combineSelectors([
-       createTodoListStateSelectors<State>(),
-       createHeaderStateSelectors<State>()
-     ]);
-     
-     export default createStore(initialState, selectors);
+    const headerStateSelectors =  createHeaderStateSelectors<State>();
+    const todoListStateSelectors = createTodoListStateSelectors<State>();
+    
+    const selectors = combineSelectors<State, typeof headerStateSelectors, typeof todoListStateSelectors>(
+     headerStateSelectors,
+     todoListStateSelectors 
+    );
+    
+    export default createStore<State, typeof selectors>(initialState, selectors);
 
 ### State
 

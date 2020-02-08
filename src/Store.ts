@@ -1,4 +1,4 @@
-import { Ref, UnwrapRef, reactive, watch, StopHandle, ComputedRef, computed } from 'vue';
+import { Ref, UnwrapRef, reactive, watch, StopHandle, ComputedRef, computed } from '@pksilen/reactive-js';
 import { Writable, writable } from 'svelte/store';
 import { onDestroy } from 'svelte';
 import { SubStateFlagWrapper } from './createSubState';
