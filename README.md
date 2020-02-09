@@ -152,12 +152,12 @@ together to a single store in store.js:
           
     export type State = typeof initialState;
         
-    const selectors = combineSelectors<State, typeof componentASelectors, typeof componentBSelectors, ... typeof componentNSelectors>([
+    const selectors = combineSelectors<State, typeof componentASelectors, typeof componentBSelectors, ... typeof componentNSelectors>(
       componentASelectors,
       componentBSelectors,
       .
       componentNSelectors
-    ]);
+    );
         
     export default createStore<State, typeof selectors>(initialState, selectors);
 
