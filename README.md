@@ -1,11 +1,5 @@
 # Universal Model for Svelte
 
-[![version][version-badge]][package]
-[![Downloads][Downloads]][package]
-[![build][build]][circleci]
-[![MIT License][license-badge]][license]
-[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Funiversal-model%2Funiversal-model-svelte.svg?type=shield)](https://app.fossa.com/projects/git%2Bgithub.com%2Funiversal-model%2Funiversal-model-svelte?ref=badge_shield)
-
 Universal model is a model which can be used with any of following UI frameworks:
 
 - Angular 2+ [universal-model-angular]
@@ -81,6 +75,8 @@ state (or sub-stores)
     
     const [componentAState] = useState(id, [state.componentAState]);
     const [selector1, selector2] = useSelectors(id, [selectors.selector1, selectors.selector2]);
+    
+[Detailed API documentation](docs/API.md)
    
 ## API Examples
 **Create initial states**
@@ -529,13 +525,6 @@ where DI is used to create services.
 
 MIT License
 
-[license-badge]: https://img.shields.io/badge/license-MIT-green
-[license]: https://github.com/universal-model/universal-model-svelte/blob/master/LICENSE
-[version-badge]: https://img.shields.io/npm/v/universal-model-svelte.svg?style=flat-square
-[package]: https://www.npmjs.com/package/universal-model-svelte
-[build]: https://img.shields.io/circleci/project/github/universal-model/universal-model-svelte/master.svg?style=flat-square
-[circleci]: https://circleci.com/gh/universal-model/universal-model-svelte/tree/master
-[Downloads]: https://img.shields.io/npm/dm/universal-model-svelte
 [universal-model]: https://github.com/universal-model/universal-model
 [example]: https://github.com/universal-model/react-todo-app-with-dependency-injection
 [universal-model-react]: https://github.com/universal-model/universal-model-react
