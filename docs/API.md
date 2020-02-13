@@ -18,8 +18,8 @@
       initialState: T & AllowedSubStateProperties<T>
     ): T & SubStateFlagWrapper
     
-Creates a sub state object from initial state object.
-This function adds a readonly \_\_isSubState\_\_ property to the initial state object.
+Creates a sub state object from initial state object.<br/>
+This function adds a readonly \_\_isSubState\_\_ property to the initial state object.<br/>
 Initial state may not contain key __isSubState\__, if it contains, an error will be thrown.
     
 ### combineSelectors
@@ -40,7 +40,7 @@ Initial state may not contain key __isSubState\__, if it contains, an error will
       selectorsObject2: Selectors<T, Un>
     ): Selectors<T, U1> & ... Selectors<T, Un>;
     
-combines object of selectors to a single object containing all selectors
+combines object of selectors to a single object containing all selectors.<br/>
 It also checks for duplicate selector keys and throws an error if a duplicate key is found.
 
 ### createStore
