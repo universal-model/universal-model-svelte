@@ -73,6 +73,8 @@ state (or sub-stores)
 
 
 ## API
+
+### Common API (Angular/React/Svelte/Vue)
     createSubState(subState);
     const store = createStore(initialState, combineSelectors(selectors))
     
@@ -80,10 +82,11 @@ state (or sub-stores)
     const selectors = store.getSelectors();
     const [state, selectors] = store.getStateAndSelectors();
     
+### Svelte specific API
     const [componentAState] = useState(id, [state.componentAState]);
     const [selector1, selector2] = useSelectors(id, [selectors.selector1, selectors.selector2]);
     
-[Detailed API documentation](docs/API.md)
+[Detailed API documentation](https://github.com/universal-model/universal-model-svelte/blob/master/docs/API.md)
    
 ## API Examples
 **Create initial states**
