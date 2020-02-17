@@ -33,6 +33,7 @@ export default class Store<T extends State, U extends SelectorsBase<T>> {
   constructor(initialState: T, selectors?: Selectors<T, U>) {
     this.reactiveState = reactive(initialState);
     this.reactiveSelectors = {} as ComputedSelectors<T, U>;
+    console.log(selectors);
     if (selectors) {
       Object.keys(selectors).forEach(
         (key: keyof U) =>

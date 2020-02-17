@@ -3,6 +3,8 @@
 [![version][version-badge]][package]
 [![Downloads][Downloads]][package]
 [![build][build]][circleci]
+[![coverage][coverage]][codecov]
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=universal-model_universal-model-svelte&metric=alert_status)](https://sonarcloud.io/dashboard?id=universal-model_universal-model-svelte)
 [![MIT License][license-badge]][license]
 [![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Funiversal-model%2Funiversal-model-svelte.svg?type=shield)](https://app.fossa.com/projects/git%2Bgithub.com%2Funiversal-model%2Funiversal-model-svelte?ref=badge_shield)
 
@@ -547,6 +549,8 @@ MIT License
 [universal-model-react]: https://github.com/universal-model/universal-model-react
 [universal-model-angular]: https://github.com/universal-model/universal-model-angular
 [universal-model-vue]: https://github.com/universal-model/universal-model-vue
+[coverage]: https://img.shields.io/codecov/c/github/universal-model/universal-model-angular/master.svg?style=flat-square
+[codecov]: https://codecov.io/gh/universal-model/universal-model-angular
 
 
 
