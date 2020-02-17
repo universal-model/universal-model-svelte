@@ -1,6 +1,6 @@
 {
   "name": "universal-model-svelte",
-  "version": "0.5.2",
+  "version": "0.5.3",
   "description": "Universal model for Svelte",
   "main": "lib/index.js",
   "types": "lib/types/index.d.ts",
