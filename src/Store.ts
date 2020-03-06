@@ -5,6 +5,8 @@ import { SubStateFlagWrapper } from './createSubState';
 
 export type SubState = Omit<object, '__isSubState__'> & SubStateFlagWrapper;
 export type State = { [key: string]: SubState };
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export type StateGetter = () => any;
 
 export type SelectorsBase<T extends State> = {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -57,16 +59,28 @@ export default class Store<T extends State, U extends SelectorsBase<T>> {
     return [this.reactiveState, this.reactiveSelectors];
   }
 
-  useState(id: string, subStates: SubState[]): Writable<SubState>[] {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  useState(id: string, subStatesOrStateGetters: Array<SubState | StateGetter>): Writable<any>[] {
     this.stateStopWatches.set(id, []);
     this.stateWritables.set(id, []);
 
-    subStates.forEach((subState: SubState, index: number) => {
-      this.stateWritables.get(id).push(writable(subState));
+    subStatesOrStateGetters.forEach((subStateOrStateGetter: SubState | StateGetter, index: number) => {
+      this.stateWritables
+        .get(id)
+        .push(
+          writable(
+            typeof subStateOrStateGetter === 'function'
+              ? computed(subStateOrStateGetter).value
+              : subStateOrStateGetter
+          )
+        );
 
       this.stateStopWatches.get(id).push(
         watch(
-          () => subState,
+          () =>
+            typeof subStateOrStateGetter === 'function'
+              ? computed(subStateOrStateGetter)
+              : subStateOrStateGetter,
           () => {
             if (!this.idToUpdatesMap.get(id)) {
               setTimeout(() => {
@@ -87,7 +101,10 @@ export default class Store<T extends State, U extends SelectorsBase<T>> {
 
             this.idToUpdatesMap.set(id, {
               ...this.idToUpdatesMap.get(id),
-              [`state${index}`]: subState
+              [`state${index}`]:
+                typeof subStateOrStateGetter === 'function'
+                  ? computed(subStateOrStateGetter).value
+                  : subStateOrStateGetter
             });
           },
           {

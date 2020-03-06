@@ -61,9 +61,9 @@ gets state and selectors from the store
 
 ### Store::useState 
     
-    useState(id: string, subStates: SubState[]): Writable<SubState>[]
+    useState(id: string, subStatesOrStateGetters: Array<SubState | StateGetter>): Writable<any>[]
     
-returns reactive sub-state(s) for Svelte component with given id and given sub-state(s)<br/>
+returns reactive sub-state(s) or state getter(s) for Svelte component with given id and given sub-state(s and state getter(s)<br/>
 **NOTE #1** If you only call getState() and forget to call useState(), your view won't be reactive and does not update.<br/>
 **NOTE #2** Each Svelte component instance must have its own unique id given as the first argument.
 

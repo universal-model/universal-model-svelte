@@ -207,6 +207,21 @@ provided by those components. This will ensure encapsulation of each component's
       {$componentAState.prop1}
       {$selector1} ...
     <div>
+    
+You can also use state getters
+
+    <script>  
+      const state = store.getState();
+      const [componentAState, componentBStateProp1] = useState('componentA', [state.componentAState, () => state.componentAState.prop1]);
+      const selectors = store.getSelectors();
+      const [selector1, selector2] = useSelectors('componentA', [selectors.selector1, selectors.selector2]);    
+    </script>
+    
+    <div>
+      {$componentAState.prop1}
+      {$componentBStateProp1} ...
+    <div>
+
 
 # Example
 

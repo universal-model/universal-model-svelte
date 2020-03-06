@@ -27,7 +27,10 @@ const initialState1 = {
 };
 
 const initialState = {
-  state1: createSubState(initialState1)
+  state1: createSubState(initialState1),
+  state2: createSubState({
+    value: 2
+  })
 };
 
 type State = typeof initialState;
@@ -65,8 +68,8 @@ describe('Store', () => {
   describe('useState', () => {
     it('should update component instance on state changes', (done) => {
       // GIVEN
-      const { state1 } = store.getState();
-      const [svelteState1] = store.useState('id', [state1]);
+      const { state1, state2 } = store.getState();
+      const [svelteState1, value] = store.useState('id', [state1, () => state2.value]);
       const [numberSelector] = store.useSelectors('id', [store.getSelectors().numberSelector]);
 
       // WHEN
